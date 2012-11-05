@@ -1,0 +1,129 @@
+<script>
+
+
+function test(title, expected, actual){
+	if (expected===actual){
+		console.log("Passed "+title+".");
+	}
+	else {
+		console.log("Failed "+title+". Expected "+expected+", got "+actual+".");
+	}
+}
+
+
+
+function scoreNobs(hand, flop){
+
+	var score = 0;
+
+	for (var i=0; i<hand.length; i++){
+		if ( flop[1] === hand[i][1] && hand[i][0] === "J"){
+			score += 1;
+		}		
+	}
+	return score;
+}
+
+test("Nobs Found", 1, scoreNobs([[3,'s'], [3,'h'], ['J','h']], [8,'h']) );
+test("Nae Nobs", 0, scoreNobs([[3,'s'], [3,'h'], ['J','d']], [8,'h']) );
+
+
+
+function scorePairs(cards){
+ 	var score = 0;
+
+	for (var i = 0; i<cards.length; i++){
+		for (var j = i+1; j<cards.length; j++){
+			if (cards[i][0] === cards[j][0]){
+				score += 2;
+			}
+		}
+	}
+	return score;
+}
+
+test("Three Pairs", 6, scorePairs([ [3,'s'],[3,'h'],[3,'d'],[2,'d'] ]));
+test("Nae Pairs", 0, scorePairs([ [5,'s'],[8,'h'],[3,'d'],[2,'d'] ]));
+
+
+function scoreFlush(hand, flop){
+	var score = 0;
+
+	if ( hand[0][1] === hand[1][1] && hand[0][1] === hand[2][1] && hand[0][1] === hand[3][1] ) {
+		score += 4;
+		if ( hand[0][1] === flop[1] ){
+			score += 1;
+		}
+	}
+	return score;
+}
+
+test("Four Flush", 4, scoreFlush([ [3,'d'],[4,'d'],[5,'d'],[6,'d'] ], ['Q','c'] ));
+test("Five Flush", 5, scoreFlush([ [3,'d'],[4,'d'],[5,'d'],[6,'d'] ], ['Q','d'] ));
+test("Nae Flush", 0, scoreFlush([ [5,'s'],[8,'h'],[3,'d'],[2,'d'] ], ['Q','d'] ));
+
+
+function sumCardsArray(cards){
+	
+	var cardValueMap = {
+		'J' : 10,
+		'Q' : 10,
+		'K' : 10,
+		'A' : 1
+	}
+
+
+	var sum = 0;
+	for (var i=0; i<cards.length; i++){
+		
+		var symbol = cards[i][0];
+
+		if (cardValueMap[symbol]) {
+			var value = cardValueMap[symbol];
+		}
+		else {
+			value = symbol;
+		}
+
+		sum += value;
+	}
+	return sum;
+}
+
+test("Simple Sum Cards", 11, sumCardsArray([ [3,'s'],[3,'h'],[3,'d'],[2,'d'] ]));
+test("Facecard Sum Cards", 31, sumCardsArray([ ['J','s'],['A','h'],['Q','d'],['K','d'] ]));
+
+
+function cardCombinations(lol, cards){
+console.log("Called with ",lol,cards);
+return;
+
+	if (cards.length === 0 ){
+		return lol;
+	}
+	else {
+
+		if (lol.length === 0){
+			var newLol = [ [cards[0]] ];
+		}
+		else {
+			var newLol = lol;
+		// console.log("in recursiv"newLol);
+		// console.log("newLol is: "+newLol);
+			var lolLength = lol.length;
+			for (var i = 0; i<lolLength; i++){
+				var addToLol = lol[i]+[cards[0]];
+				newLol.push(addToLol);
+			}
+		}
+		//return cardCombinations(newLol, cards.slice(1) );
+		console.log(newLol, cards.slice(1));
+	}
+
+}
+
+
+//console.log(cardCombinations( [], [0,1,2] ));
+console.log(cardCombinations( [[0]], [1,2] ));
+
+</script>
